@@ -28,7 +28,7 @@ function processData(data) {
     })
   };
   document.getElementById('loading').hidden = true;
-  document.getElementById('search').hidden = false;
+  document.getElementById('search-input').hidden = false;
 }
 
 processData(searchDocuments);

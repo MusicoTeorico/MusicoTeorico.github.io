@@ -90,7 +90,22 @@ function renderResults() {
 }
 
 function onSearchChange(e) {
-  results = index.search(e.target.value, { enrich: true });
+ // ✅ Función para obtener parámetros de la URL
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+// ✅ Revisar si hay un parámetro de búsqueda en la URL
+window.onload = function() {
+    const searchQuery = getQueryParam("search");
+    if (searchQuery) {
+        document.getElementById("search-input").value = decodeURIComponent(searchQuery);
+        onSearchChange({ target: { value: decodeURIComponent(searchQuery) } });
+    }
+};
+
+	results = index.search(e.target.value, { enrich: true });
   if (results.length > 0) {
     // limit search results to the top 100 by relevance
     results = results.slice(0,100);

@@ -1,4 +1,3 @@
-
 body {
   font-family: sans-serif;
   font-size: 1.2em;
@@ -25,7 +24,7 @@ body {
 }
 .wrapper {
   display: block;
-  max-width: 600px;
+  max-width: 660px; /* Ampliado 3 cm por cada lado */
   margin: 0 auto;
   word-wrap: break-word;
 }
@@ -34,19 +33,20 @@ body {
   flex-direction: column;
 }
 .tweet {
-    background-color: #e8e8e8;
-    max-width: 600px;
-    padding: 16px;
-    font-family: sans-serif;
-    font-size: 1.2em;
-    border: 2px solid black;
-    border-radius: 16px;
+  background-color: #e8e8e8;
+  max-width: 660px; /* Ampliado 3 cm por cada lado */
+  padding: 16px;
+  font-family: sans-serif;
+  font-size: 1.2em;
+  border: 2px solid black;
+  border-radius: 16px;
 }
 .tweet img {
   max-height: 100%;
   vertical-align: bottom;
-  width: 100%;
-  object-fit: cover;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain; /* Evita que la imagen se recorte */
 }
 .tweet video {
   max-height: 100%;
@@ -62,9 +62,9 @@ body {
   margin-bottom: 0px;
 }
 .tweet li {
-  height: 20vh;
-  width: 20vh;
-  flex-grow: 1;
+  height: auto;
+  width: auto;
+  max-width: 100%;
 }
 .tweet .display_name {
   margin-bottom: 0;
@@ -91,20 +91,20 @@ body {
 .child {
   margin-top: 16px;
   margin-left: 64px;
-  max-width: calc(600px - 64px);
+  max-width: calc(660px - 64px); /* Ampliado 3 cm por cada lado */
   background-color: white;
 }
 .parent {
   margin-bottom: 16px;
   margin-right: 64px;
-  max-width: calc(600px - 64px);
+  max-width: calc(660px - 64px); /* Ampliado 3 cm por cada lado */
   background-color: white;
 }
 @media screen and (max-width: 599px) {
   .tweet li {
-    height: 15vh;
-    width: 15vh;
-    flex-grow: 1;
+    height: auto;
+    width: auto;
+    max-width: 100%;
   }
 }
 @media(prefers-color-scheme: dark) {
@@ -170,16 +170,21 @@ body {
 .tab.active {
   text-decoration: underline;
 }
-#browse-sort > button {
+#navegar-sort > button {
   font-size: 1.0em;
 }
 #page-num {
   font-size: 1.0em;
   width: 80px;
 }
-#browse-sort {
+#navegar-sort {
   line-height: 1.7em;
 }
 #paging {
   margin: 8px 0;
 }
+
+<!-- Botón Página siguiente -->
+<div style="text-align: center; margin-top: 16px;">
+  <a href="siguiente-pagina.html" style="font-size: 1.2em; text-decoration: none; background-color: black; color: white; padding: 8px 16px; border-radius: 8px; display: inline-block;">Página siguiente</a>
+</div>

@@ -82,7 +82,7 @@ function sortResults(criterion) {
 }
 
 function renderResults() {
-  const output = results.map(item => `<p class="search_item"><div class="search_link"><a href="Sign_in_music/status/${item.id_str}">link</a></div> <div class="search_text">${item.full_text}</div><div class="search_time">${new Date(item.created_at).toLocaleString()}</div><hr class="search_divider" /></p>`.replace(/\.\.\/\.\.\/tweets_media\//g,'Sign_in_music/tweets_media/'));
+  const output = results.map(item => `<p class="search_item"><div class="search_link"><a href="MusicoTeorico/status/${item.id_str}">link</a></div> <div class="search_text">${item.full_text}</div><div class="search_time">${new Date(item.created_at).toLocaleString()}</div><hr class="search_divider" /></p>`.replace(/\.\.\/\.\.\/tweets_media\//g,'MusicoTeorico/tweets_media/'));
   document.getElementById('output').innerHTML = output.join('');
   if (results.length > 0) {
     document.getElementById('output').innerHTML += '<a href="#tabs">top &uarr;</a>';

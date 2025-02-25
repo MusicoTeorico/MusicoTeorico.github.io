@@ -162,6 +162,7 @@ function embedYouTubeVideos() {
             if (youtubeMatch) {
                 let videoId = youtubeMatch[2]; // Extrae el ID del video de YouTube
                 let iframe = document.createElement("iframe");
+		let br = document.createElement("br"); // Salto de línea antes del iframe
                 iframe.src = `https://www.youtube.com/embed/${videoId}`;
                 iframe.width = "100%";
                 iframe.height = "315";
@@ -170,7 +171,7 @@ function embedYouTubeVideos() {
                 iframe.allowFullscreen = true;
 
                 // Reemplaza el enlace con el iframe
-                link.replaceWith(iframe);
+                link.replaceWith(br, iframe);
             }
         });
     });

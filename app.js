@@ -1,11 +1,10 @@
-
 let results;
 
 var index = new FlexSearch.Document({
-	encode: function(str){
-		const cjkItems = str.replace(/[\x00-\x7F]/g, "").split("");
-		const asciiItems = str.toLowerCase().split(/\W+/);
-		return cjkItems.concat(asciiItems);
+  encode: function (str) {
+    const cjkItems = str.replace(/[\x00-\x7F]/g, "").split("");
+    const asciiItems = str.toLowerCase().split(/\W+/);
+    return cjkItems.concat(asciiItems);
   },
   document: {
     id: "id_str",
@@ -14,165 +13,84 @@ var index = new FlexSearch.Document({
   }
 });
 
-
 const searchInput = document.getElementById('search-input');
 
 function processData(data) {
   for (doc of data) {
     index.add({
-        id_str: doc.id_str,
-        created_at: doc.created_at,
-        full_text: doc.full_text,
-        favorite_count: doc.favorite_count,
-        retweet_count: doc.retweet_count
-    })
+      id_str: doc.id_str,
+      created_at: doc.created_at,
+      full_text: doc.full_text,
+      favorite_count: doc.favorite_count,
+      retweet_count: doc.retweet_count
+    });
   };
   document.getElementById('loading').hidden = true;
   document.getElementById('search').hidden = false;
 }
 
 processData(searchDocuments);
-let browseDocuments = searchDocuments.sort(function(a,b){
+let browseDocuments = searchDocuments.sort(function (a, b) {
   return new Date(b.created_at) - new Date(a.created_at);
 });
 
-function sortResults(criterion) {
-  if (criterion === 'newest-first') {
-    results = results.sort(function(a,b){
-      return new Date(b.created_at) - new Date(a.created_at);
-    });
-    renderResults();
-  }
-  if (criterion === 'oldest-first') {
-    results = results.sort(function(a,b){
-      return new Date(a.created_at) - new Date(b.created_at);
-    });
-    renderResults();
-  }
-  if (criterion === 'most-relevant') {
-    results = results.sort(function(a,b){
-      return a.index - b.index;
-    });
-    renderResults();
-  }
-  if (criterion === 'most-popular') {
-    results = results.sort(function(a,b){
-      return (+b.favorite_count + +b.retweet_count) - (+a.favorite_count + +a.retweet_count);
-    });
-    renderResults();
-  }
-  if (criterion === 'newest-first-browse') {
-    browseDocuments = browseDocuments.sort(function(a,b){
-      return new Date(b.created_at) - new Date(a.created_at);
-    });
-    renderBrowse();
-  }
-  if (criterion === 'oldest-first-browse') {
-    browseDocuments = browseDocuments.sort(function(a,b){
-      return new Date(a.created_at) - new Date(b.created_at);
-    });
-    renderBrowse();
-  }
-  if (criterion === 'most-popular-browse') {
-    browseDocuments = browseDocuments.sort(function(a,b){
-      return (+b.favorite_count + +b.retweet_count) - (+a.favorite_count + +a.retweet_count);
-    });
-    renderBrowse();
-  }
-}
-
-function renderResults() {
-  const output = results.map(item => `<p class="search_item"><div class="search_link"><a href="MusicoTeorico/status/${item.id_str}">link</a></div> <div class="search_text">${item.full_text}</div><div class="search_time">${new Date(item.created_at).toLocaleString()}</div><hr class="search_divider" /></p>`.replace(/\.\.\/\.\.\/tweets_media\//g,'MusicoTeorico/tweets_media/'));
-  document.getElementById('output').innerHTML = output.join('');
-  if (results.length > 0) {
-    document.getElementById('output').innerHTML += '<a href="#tabs">top &uarr;</a>';
-  }
-}
-
-function onSearchChange(e) {
-  results = index.search(e.target.value, { enrich: true });
-  if (results.length > 0) {
-    // limit search results to the top 100 by relevance
-    results = results.slice(0,100);
-    // preserve original search result order in the 'index' variable since that is ordered by relevance
-    results = results[0].result.map((item, index) => { let result = item.doc; result.index = index; return result;});
-  }
-  renderResults();
-}
-searchInput.addEventListener('input', onSearchChange);
-
-function searchTab() {
-  const clickedTab = document.getElementById('search-tab');
-  clickedTab.classList.add('active');
-  const otherTab = document.getElementById('browse-tab');
-  otherTab.classList.remove('active');
-  document.getElementById('browse').hidden = true;
-  document.getElementById('search').hidden = false;
-}
-
-function browseTab() {
-  const clickedTab = document.getElementById('browse-tab');
-  clickedTab.classList.add('active');
-  const otherTab = document.getElementById('search-tab');
-  otherTab.classList.remove('active');
-  const searchContent = document.getElementById('search');
-  document.getElementById('search').hidden = true;
-  document.getElementById('browse').hidden = false;
-}
-
-const pageSize = 50;
-const pageMax = Math.floor(browseDocuments.length/pageSize) + 1;
-let page = 1;
-let browseIndex = (page - 1) * pageSize;
-
-function onPageNumChange(e) {
-  page = e.target.value;
-  browseIndex = (page - 1) * pageSize;
-  renderBrowse();
-}
-
-document.getElementById('page-total').innerText = pageMax;
-document.getElementById('page-num').addEventListener('input', onPageNumChange);
-document.getElementById('page-num').value = +page;
-document.getElementById('page-num').max = pageMax;
-document.getElementById('page-num').min = 1;
-
 function renderBrowse() {
-  const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => `<p class="search_item"><div class="search_link"><a href="MusicoTeorico/status/${item.id_str}">link</a></div> <div class="search_text">${item.full_text}</div><div class="search_time">${new Date(item.created_at).toLocaleString()}</div><hr class="search_divider" /></p>`.replace(/\.\.\/\.\.\/tweets_media\//g,'MusicoTeorico/tweets_media/'));
+  const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => `
+    <p class="search_item">
+      <div class="search_link"><a href="MusicoTeorico/status/${item.id_str}">link</a></div>
+      <div class="search_text">${item.full_text}</div>
+      <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
+      <hr class="search_divider" />
+    </p>`.replace(/\.\.\/\.\.\/tweets_media\//g, 'MusicoTeorico/tweets_media/')
+  );
   document.getElementById('browse-output').innerHTML = output.join('');
   document.getElementById('browse-output').innerHTML += '<a href="#tabs">top &uarr;</a>';
 }
 
-renderBrowse();
+const pageSize = 50;
+let page = 1;
+let browseIndex = (page - 1) * pageSize;
+
+function updatePagination() {
+  document.getElementById('page-num').value = page;
+  document.getElementById('page-total').innerText = Math.ceil(browseDocuments.length / pageSize);
+  document.getElementById('prev-page').disabled = page === 1;
+  document.getElementById('next-page').disabled = page === Math.ceil(browseDocuments.length / pageSize);
+}
+
+function goToNextPage() {
+  if (page < Math.ceil(browseDocuments.length / pageSize)) {
+    page++;
+    browseIndex = (page - 1) * pageSize;
+    renderBrowse();
+    updatePagination();
+  }
+}
+
+function goToPrevPage() {
+  if (page > 1) {
+    page--;
+    browseIndex = (page - 1) * pageSize;
+    renderBrowse();
+    updatePagination();
+  }
+}
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Llamamos a esta función después de que se carguen los tweets
-    embedYouTubeVideos();
+  updatePagination();
+  renderBrowse();
+
+  // Agregar controles de paginación al DOM
+  const paginationControls = document.createElement('div');
+  paginationControls.className = 'pagination-controls';
+  paginationControls.innerHTML = `
+    <button id="prev-page">Página Anterior</button>
+    <span>Página <input type="number" id="page-num" min="1" value="1" readonly> de <span id="page-total"></span></span>
+    <button id="next-page">Página Siguiente</button>
+  `;
+  document.getElementById('browse-output').insertAdjacentElement('afterend', paginationControls);
+
+  document.getElementById('next-page').addEventListener('click', goToNextPage);
+  document.getElementById('prev-page').addEventListener('click', goToPrevPage);
 });
 
-function embedYouTubeVideos() {
-    // Selecciona todos los tweets en la página
-    document.querySelectorAll(".tweet").forEach(tweet => {
-        let links = tweet.querySelectorAll("a"); // Busca todos los enlaces en el tweet
-
-        links.forEach(link => {
-            let url = link.href;
-            let youtubeMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
-
-            if (youtubeMatch) {
-                let videoId = youtubeMatch[2]; // Extrae el ID del video de YouTube
-                let iframe = document.createElement("iframe");
-		let br = document.createElement("br"); // Salto de línea antes del iframe
-                iframe.src = `https://www.youtube.com/embed/${videoId}`;
-                iframe.width = "100%";
-                iframe.height = "315";
-                iframe.frameBorder = "0";
-                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                iframe.allowFullscreen = true;
-
-                // Reemplaza el enlace con el iframe
-                link.replaceWith(br, iframe);
-            }
-        });
-    });
-}

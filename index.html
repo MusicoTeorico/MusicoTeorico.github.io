@@ -27,6 +27,13 @@
           <div id="browse-sort">Ordenar por: <button class="sort-button-browse" onclick="sortResults('oldest-first-browse')">más antiguos primero</button> | <button class="sort-button-browse" onclick="sortResults('newest-first-browse')">más nuevos primero</button> | <button class="sort-button" onclick="sortResults('most-popular-browse')">más populares</button></div>
           <p id="paging">Página <input id="page-num" type="number" /> de <span id="page-total">...</span> </p>
           <div id="browse-output"></div>
+
+<div class="pagination-controls">
+    <button id="prev-page">Página Anterior</button>
+    <span>Página <input type="number" id="page-num" min="1" value="1" readonly> de <span id="page-total"></span></span>
+    <button id="next-page">Página Siguiente</button>
+</div>
+
         </div>
       </div>
       <p>This site was made with <a href="https://tinysubversions.com/twitter-archive/make-your-own/">this Twitter archiving tool</a>.</p>

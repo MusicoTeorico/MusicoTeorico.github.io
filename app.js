@@ -34,6 +34,17 @@ let browseDocuments = searchDocuments.sort(function (a, b) {
   return new Date(b.created_at) - new Date(a.created_at);
 });
 
+const pageSize = 50;
+let page = 1;
+let browseIndex = (page - 1) * pageSize;
+
+function updatePagination() {
+  document.getElementById('page-num').value = page;
+  document.getElementById('page-total').innerText = Math.ceil(browseDocuments.length / pageSize);
+  document.getElementById('prev-page').disabled = page === 1;
+  document.getElementById('next-page').disabled = page === Math.ceil(browseDocuments.length / pageSize);
+}
+
 function renderBrowse() {
   const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => `
     <p class="search_item">
@@ -45,17 +56,6 @@ function renderBrowse() {
   );
   document.getElementById('browse-output').innerHTML = output.join('');
   document.getElementById('browse-output').innerHTML += '<a href="#tabs">top &uarr;</a>';
-}
-
-const pageSize = 50;
-let page = 1;
-let browseIndex = (page - 1) * pageSize;
-
-function updatePagination() {
-  document.getElementById('page-num').value = page;
-  document.getElementById('page-total').innerText = Math.ceil(browseDocuments.length / pageSize);
-  document.getElementById('prev-page').disabled = page === 1;
-  document.getElementById('next-page').disabled = page === Math.ceil(browseDocuments.length / pageSize);
 }
 
 function goToNextPage() {
@@ -77,9 +77,6 @@ function goToPrevPage() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  updatePagination();
-  renderBrowse();
-
   // Agregar controles de paginación al DOM
   const paginationControls = document.createElement('div');
   paginationControls.className = 'pagination-controls';
@@ -92,5 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.getElementById('next-page').addEventListener('click', goToNextPage);
   document.getElementById('prev-page').addEventListener('click', goToPrevPage);
-});
 
+  updatePagination();
+  renderBrowse();
+});

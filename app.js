@@ -48,7 +48,7 @@ function embedYouTubeLinks(text) {
         /(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)|https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+))/g,
         (match, p1, p2, p3) => {
             const videoId = p2 || p3; // Extraer el ID del video
-            return `<br><iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+            return `<br><div style="text-align: center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div><br>`;
         }
     );
 }

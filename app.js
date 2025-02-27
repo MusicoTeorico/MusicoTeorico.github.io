@@ -52,12 +52,12 @@ function updatePagination() {
 
 // Embed YouTube links in text
 function embedYouTubeLinks(text) {
-  // Expresión regular para detectar enlaces de YouTube que no estén ya dentro de un iframe
-  const youtubeRegex = /(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)(?:&t=(\d+[ms]?|\d+m\d+s))?)|(https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+)(?:\?t=(\d+[ms]?|\d+m\d+s))?)(?![^<]*<\/iframe>)/gi;
+  // Expresión regular mejorada para detectar enlaces de YouTube que no estén ya dentro de un iframe
+  const youtubeRegex = /(?<!<iframe[^>]*>)(?:https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)(?:&t=(\d+[ms]?|\d+m\d+s))?|https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+)(?:\?t=(\d+[ms]?|\d+m\d+s))?)/gi;
 
-  return text.replace(youtubeRegex, (match, p1, p2, p3, p4, p5, p6) => {
-    const videoId = p2 || p5; // Extraer el ID del video
-    const startTime = p3 || p6; // Extraer el tiempo de inicio (si existe)
+  return text.replace(youtubeRegex, (match, p1, p2, p3, p4) => {
+    const videoId = p1 || p3; // Extraer el ID del video
+    const startTime = p2 || p4; // Extraer el tiempo de inicio (si existe)
 
     // Convertir el tiempo de inicio a segundos si es necesario
     let startTimeInSeconds = 0;
@@ -79,6 +79,7 @@ function embedYouTubeLinks(text) {
     return `<br><div style="text-align: center;"><iframe width="560" height="315" src="${iframeUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><br>`;
   });
 }
+
 
 // Render browse view
 function renderBrowse() {

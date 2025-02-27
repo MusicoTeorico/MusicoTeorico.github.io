@@ -75,8 +75,7 @@ function embedYouTubeLinks(text) {
     // Construir la URL del iframe con el tiempo de inicio
     const iframeUrl = `https://www.youtube.com/embed/${videoId}${startTimeInSeconds ? `?start=${startTimeInSeconds}` : ''}`;
 
-    // Devolver el iframe centrado
-return `<div style="text-align: center;"><iframe width="560" height="315" src="${iframeUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+   
   });
 }
 

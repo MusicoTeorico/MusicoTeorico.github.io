@@ -91,11 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
     <button id="next-page">Página Siguiente</button>
   `;
 
-  const browseSection = document.getElementById('browse');
-  browseSection.appendChild(paginationContainer);
-
-  document.getElementById('next-page').addEventListener('click', goToNextPage);
-  document.getElementById('prev-page').addEventListener('click', goToPrevPage);
 
   updatePagination();
   renderBrowse();

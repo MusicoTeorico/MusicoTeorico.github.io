@@ -52,29 +52,30 @@ function updatePagination() {
 
 // Embed YouTube links in text
 function embedYouTubeLinks(text) {
-  const youtubeRegex = /(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)(?:&t=(\d+[ms]?|\d+m\d+s))?)|(https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+)(?:\?t=(\d+[ms]?|\d+m\d+s))?)/g;
+  // Expresión regular para detectar enlaces de YouTube que no estén ya dentro de un iframe
+  const youtubeRegex = /(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)(?:&t=(\d+[ms]?|\d+m\d+s))?)|(https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+)(?:\?t=(\d+[ms]?|\d+m\d+s))?)(?![^<]*<\/iframe>)/gi;
 
   return text.replace(youtubeRegex, (match, p1, p2, p3, p4, p5, p6) => {
-    const videoId = p2 || p5; // Extract video ID
-    const startTime = p3 || p6; // Extract start time (if exists)
+    const videoId = p2 || p5; // Extraer el ID del video
+    const startTime = p3 || p6; // Extraer el tiempo de inicio (si existe)
 
-    // Convert start time to seconds
+    // Convertir el tiempo de inicio a segundos si es necesario
     let startTimeInSeconds = 0;
     if (startTime) {
       if (startTime.includes('m')) {
-        // Format: 1m30s
+        // Formato: 1m30s
         const [minutes, seconds] = startTime.split('m');
         startTimeInSeconds = parseInt(minutes) * 60 + (parseInt(seconds) || 0);
       } else {
-        // Format: 90s or 90
+        // Formato: 90s o 90
         startTimeInSeconds = parseInt(startTime);
       }
     }
 
-    // Build iframe URL with start time
+    // Construir la URL del iframe con el tiempo de inicio
     const iframeUrl = `https://www.youtube.com/embed/${videoId}${startTimeInSeconds ? `?start=${startTimeInSeconds}` : ''}`;
 
-    // Return centered iframe with line breaks
+    // Devolver el iframe centrado y con saltos de línea
     return `<br><div style="text-align: center;"><iframe width="560" height="315" src="${iframeUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><br>`;
   });
 }

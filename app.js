@@ -76,6 +76,15 @@ function goToPrevPage() {
   }
 }
 
+function browseTab() {
+  const clickedTab = document.getElementById('browse-tab');
+  clickedTab.classList.add('active');
+  const otherTab = document.getElementById('search-tab');
+  otherTab.classList.remove('active');
+  document.getElementById('search').hidden = true;
+  document.getElementById('browse').hidden = false;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // Agregar controles de paginación al DOM
   const paginationControls = document.createElement('div');

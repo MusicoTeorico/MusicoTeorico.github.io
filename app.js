@@ -39,8 +39,6 @@ let page = 1;
 let browseIndex = (page - 1) * pageSize;
 
 function updatePagination() {
-  document.getElementById('page-num').value = page;
-  document.getElementById('page-total').innerText = Math.ceil(browseDocuments.length / pageSize);
   document.getElementById('prev-page').disabled = page === 1;
   document.getElementById('next-page').disabled = page === Math.ceil(browseDocuments.length / pageSize);
 }
@@ -86,12 +84,10 @@ function browseTab() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Agregar controles de paginación al DOM
   const paginationControls = document.createElement('div');
   paginationControls.className = 'pagination-controls';
   paginationControls.innerHTML = `
     <button id="prev-page">Página Anterior</button>
-    <span>Página <input type="number" id="page-num" min="1" value="1" readonly> de <span id="page-total"></span></span>
     <button id="next-page">Página Siguiente</button>
   `;
   document.getElementById('browse-output').insertAdjacentElement('afterend', paginationControls);
@@ -102,3 +98,4 @@ document.addEventListener("DOMContentLoaded", function () {
   updatePagination();
   renderBrowse();
 });
+

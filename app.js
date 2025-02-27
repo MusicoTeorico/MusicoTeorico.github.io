@@ -84,13 +84,15 @@ function browseTab() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const paginationControls = document.createElement('div');
-  paginationControls.className = 'pagination-controls';
-  paginationControls.innerHTML = `
+  const paginationContainer = document.createElement('div');
+  paginationContainer.className = 'pagination-container';
+  paginationContainer.innerHTML = `
     <button id="prev-page">Página Anterior</button>
     <button id="next-page">Página Siguiente</button>
   `;
-  document.getElementById('browse-output').insertAdjacentElement('afterend', paginationControls);
+
+  const browseSection = document.getElementById('browse');
+  browseSection.appendChild(paginationContainer);
 
   document.getElementById('next-page').addEventListener('click', goToNextPage);
   document.getElementById('prev-page').addEventListener('click', goToPrevPage);

@@ -62,7 +62,6 @@ function goToNextPage() {
     browseIndex = (page - 1) * pageSize;
     renderBrowse();
     updatePagination();
-    document.getElementById('current-page').textContent = page; // Actualiza número de página
   }
 }
 
@@ -72,7 +71,6 @@ function goToPrevPage() {
     browseIndex = (page - 1) * pageSize;
     renderBrowse();
     updatePagination();
-    document.getElementById('current-page').textContent = page; // Actualiza número de página
   }
 }
 
@@ -89,15 +87,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const paginationContainer = document.createElement('div');
   paginationContainer.className = 'pagination-container';
   paginationContainer.innerHTML = `
-        <button id="prev-page">Página Anterior</button>
-    <span>Página <span id="current-page">1</span></span>
+    <button id="prev-page">Página Anterior</button>
     <button id="next-page">Página Siguiente</button>
   `;
+
   const browseSection = document.getElementById('browse');
   browseSection.appendChild(paginationContainer);
 
   document.getElementById('next-page').addEventListener('click', goToNextPage);
   document.getElementById('prev-page').addEventListener('click', goToPrevPage);
+
   updatePagination();
   renderBrowse();
 });

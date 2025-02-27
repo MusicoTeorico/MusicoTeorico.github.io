@@ -52,11 +52,11 @@ function updatePagination() {
 
 // Embed YouTube links in text
 function embedYouTubeLinks(text) {
-  const youtubeRegex = /(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)(?:&t=(\d+[ms]?|\d+m\d+s))?|https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+)(?:\?t=(\d+[ms]?|\d+m\d+s))?/g;
+  const youtubeRegex = /(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)(?:&t=(\d+[ms]?|\d+m\d+s))?)|(https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+)(?:\?t=(\d+[ms]?|\d+m\d+s))?)/g;
 
-  return text.replace(youtubeRegex, (match, p1, p2, p3, p4, p5) => {
-    const videoId = p2 || p4; // Extract video ID
-    const startTime = p3 || p5; // Extract start time (if exists)
+  return text.replace(youtubeRegex, (match, p1, p2, p3, p4, p5, p6) => {
+    const videoId = p2 || p5; // Extract video ID
+    const startTime = p3 || p6; // Extract start time (if exists)
 
     // Convert start time to seconds
     let startTimeInSeconds = 0;

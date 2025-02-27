@@ -46,7 +46,7 @@ function updatePagination() {
 function embedYouTubeLinks(text) {
     // Expresión regular para detectar enlaces de YouTube que no estén ya dentro de un iframe
     return text.replace(
-        /(?!<iframe[^>]*>)(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)|https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+))(?!<\/iframe>)/g,
+        /(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)|https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+)(?![^<]*<\/iframe>)/g,
         (match, p1, p2, p3) => {
             const videoId = p2 || p3; // Extraer el ID del video
             return `<br><div style="text-align: center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div><br>`;

@@ -46,10 +46,28 @@ function updatePagination() {
 function embedYouTubeLinks(text) {
     // Expresión regular para detectar enlaces de YouTube que no estén ya dentro de un iframe
     return text.replace(
-        /(?!<iframe[^>]*>)(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)|https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+))(?!<\/iframe>)/g,
-        (match, p1, p2, p3) => {
-            const videoId = p2 || p3; // Extraer el ID del video
-            return `<br><div style="text-align: center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div><br>`;
+        /(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)(?:&t=(\d+[ms]?|\d+m\d+s))?|https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+)(?:\?t=(\d+[ms]?|\d+m\d+s))?)(?![^<]*<\/iframe>)/g,
+        (match, p1, p2, p3, p4, p5) => {
+            const videoId = p2 || p4; // Extraer el ID del video
+            const startTime = p3 || p5; // Extraer el tiempo de inicio (si existe)
+
+            // Convertir el tiempo de inicio a segundos si es necesario
+            let startTimeInSeconds = 0;
+            if (startTime) {
+                if (startTime.includes('m')) {
+                    // Formato: 1m30s
+                    const [minutes, seconds] = startTime.split('m');
+                    startTimeInSeconds = parseInt(minutes) * 60 + parseInt(seconds);
+                } else {
+                    // Formato: 90s o 90
+                    startTimeInSeconds = parseInt(startTime);
+                }
+            }
+
+            // Construir la URL del iframe con el tiempo de inicio
+            const iframeUrl = `https://www.youtube.com/embed/${videoId}${startTimeInSeconds ? `?start=${startTimeInSeconds}` : ''}`;
+
+            return `<br><div style="text-align: center;"><iframe width="560" height="315" src="${iframeUrl}" frameborder="0" allowfullscreen></iframe></div><br>`;
         }
     );
 }

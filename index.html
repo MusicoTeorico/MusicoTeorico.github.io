@@ -1,6 +1,5 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es"> <!-- Changed to "es" since your content is in Spanish -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,35 +13,43 @@
       <p>En esta página puedes buscar muchos de mis tweets y obtener un enlace a una versión archivada. Esto no incluye las respuestas a otras personas en este archivo, por lo que se trata de tweets e hilos «independientes».</p>
       <div class="tweet">
         <p id="tabs">
-          <button class="tab active" id="browse-tab" onclick="browseTab()">Navegar</button><button class="tab" id="search-tab" onclick="searchTab()">Buscar</button>
+          <button class="tab active" id="browse-tab" onclick="browseTab()">Navegar</button>
+          <button class="tab" id="search-tab" onclick="searchTab()">Buscar</button>
         </p>
         <hr class="hr">
-        <p id="loading">Loading search...</p>
+        <p id="loading">Cargando búsqueda...</p> <!-- Changed to Spanish for consistency -->
         <div id="search" hidden>
-          <input id="search-input" type="search" />
-          <div id="sorting">Sort by: <button class="sort-button" onclick="sortResults('most-relevant')">most relevant</button> | <button class="sort-button" onclick="sortResults('oldest-first')">oldest first</button> | <button class="sort-button" onclick="sortResults('newest-first')">newest first</button> | <button class="sort-button" onclick="sortResults('most-popular')">most popular</button></div>
+          <input id="search-input" type="search" placeholder="Buscar..." /> <!-- Added placeholder -->
+          <div id="sorting">
+            Ordenar por: 
+            <button class="sort-button" onclick="sortResults('most-relevant')">más relevantes</button> | 
+            <button class="sort-button" onclick="sortResults('oldest-first')">más antiguos primero</button> | 
+            <button class="sort-button" onclick="sortResults('newest-first')">más nuevos primero</button> | 
+            <button class="sort-button" onclick="sortResults('most-popular')">más populares</button>
+          </div>
           <div id="output"></div>
         </div>
         <div id="browse" hidden>
-          <div id="browse-sort">Ordenar por: <button class="sort-button-browse" onclick="sortResults('oldest-first-browse')">más antiguos primero</button> | <button class="sort-button-browse" onclick="sortResults('newest-first-browse')">más nuevos primero</button> | <button class="sort-button" onclick="sortResults('most-popular-browse')">más populares</button></div>
-         
+          <div id="browse-sort">
+            Ordenar por: 
+            <button class="sort-button-browse" onclick="sortResults('oldest-first-browse')">más antiguos primero</button> | 
+            <button class="sort-button-browse" onclick="sortResults('newest-first-browse')">más nuevos primero</button> | 
+            <button class="sort-button-browse" onclick="sortResults('most-popular-browse')">más populares</button>
+          </div>
           <div id="browse-output"></div>
-
-
-
         </div>
       </div>
-      <p>This site was made with <a href="https://tinysubversions.com/twitter-archive/make-your-own/">this Twitter archiving tool</a>.</p>
+      <p>Este sitio fue creado con <a href="https://tinysubversions.com/twitter-archive/make-your-own/">esta herramienta de archivo de Twitter</a>.</p> <!-- Changed to Spanish -->
     </div>
   </div>
   <script>
-  document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
       browseTab(); // Activa la pestaña "Navegar" por defecto
-  });
-</script>
-
+    });
+  </script>
+  <!-- Move scripts to the end of the body for better performance -->
+  <script src="searchDocuments.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/nextapps-de/flexsearch@0.7.31/dist/flexsearch.bundle.js"></script>
+  <script src="app.js"></script>
 </body>
-<script src="searchDocuments.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/nextapps-de/flexsearch@0.7.31/dist/flexsearch.bundle.js"></script>
-<script src="app.js"></script>
 </html>

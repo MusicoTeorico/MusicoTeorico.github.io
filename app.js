@@ -2,7 +2,7 @@ let results;
 
 var index = new FlexSearch.Document({
   encode: function (str) {
-    const cjkItems = str.replace(/[\x00-\x7F]/g, "").split("");
+    const cjkItems = str.replace(/[\x00-]/g, "").split("");
     const asciiItems = str.toLowerCase().split(/\W+/);
     return cjkItems.concat(asciiItems);
   },
@@ -92,6 +92,13 @@ document.addEventListener("DOMContentLoaded", function () {
   `;
 
   const browseSection = document.getElementById('browse');
+  
+  // Elimina cualquier paginación existente antes de agregar la nueva
+  const existingPagination = document.querySelector('.pagination-container');
+  if (existingPagination) {
+    existingPagination.remove();
+  }
+
   browseSection.appendChild(paginationContainer);
 
   document.getElementById('next-page').addEventListener('click', goToNextPage);
@@ -100,4 +107,5 @@ document.addEventListener("DOMContentLoaded", function () {
   updatePagination();
   renderBrowse();
 });
+
 

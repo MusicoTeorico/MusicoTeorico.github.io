@@ -43,17 +43,27 @@ function updatePagination() {
   document.getElementById('next-page').disabled = page === Math.ceil(browseDocuments.length / pageSize);
 }
 
+function embedYouTubeLinks(text) {
+    return text.replace(
+        /(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)|https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+))/g,
+        (match, p1, p2, p3) => {
+            const videoId = p2 || p3; // Extraer el ID del video
+            return `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+        }
+    );
+}
+
 function renderBrowse() {
-  const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => `
-    <p class="search_item">
-      <div class="search_link"><a href="MusicoTeorico/status/${item.id_str}">link</a></div>
-      <div class="search_text">${item.full_text}</div>
-      <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
-      <hr class="search_divider" />
-    </p>`.replace(/\.\.\/\.\.\/tweets_media\//g, 'MusicoTeorico/tweets_media/')
-  );
-  document.getElementById('browse-output').innerHTML = output.join('');
-  document.getElementById('browse-output').innerHTML += '<a href="#tabs">top &uarr;</a>';
+    const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => `
+        <p class="search_item">
+          <div class="search_link"><a href="MusicoTeorico/status/${item.id_str}">link</a></div>
+          <div class="search_text">${embedYouTubeLinks(item.full_text)}</div>
+          <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
+          <hr class="search_divider" />
+        </p>`.replace(/\.\.\/\.\.\/tweets_media\//g, 'MusicoTeorico/tweets_media/')
+    );
+    document.getElementById('browse-output').innerHTML = output.join('');
+    document.getElementById('browse-output').innerHTML += '<a href="#tabs">top &uarr;</a>';
 }
 
 function goToNextPage() {
@@ -107,5 +117,3 @@ document.addEventListener("DOMContentLoaded", function () {
   updatePagination();
   renderBrowse();
 });
-
-

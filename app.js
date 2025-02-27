@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
   browseSection.appendChild(paginationContainer);
 
   document.getElementById('next-page').addEventListener('click', goToNextPage);
-
+  document.getElementById('prev-page').addEventListener('click', goToPrevPage);
   updatePagination();
   renderBrowse();
 });

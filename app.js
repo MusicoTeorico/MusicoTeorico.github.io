@@ -50,6 +50,35 @@ function updatePagination() {
   document.getElementById('next-page').disabled = page === Math.ceil(browseDocuments.length / pageSize);
 }
 
+// Embed YouTube links in text
+function embedYouTubeLinks(text) {
+  // Expresión regular mejorada para detectar enlaces de YouTube que no estén ya dentro de un iframe
+  const youtubeRegex = /(?<!<iframe[^>]*>)(?:https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)(?:&t=(\d+[ms]?|\d+m\d+s))?|https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+)(?:\?t=(\d+[ms]?|\d+m\d+s))?)/gi;
+
+  return text.replace(youtubeRegex, (match, p1, p2, p3, p4) => {
+    const videoId = p1 || p3; // Extraer el ID del video
+    const startTime = p2 || p4; // Extraer el tiempo de inicio (si existe)
+
+    // Convertir el tiempo de inicio a segundos si es necesario
+    let startTimeInSeconds = 0;
+    if (startTime) {
+      if (startTime.includes('m')) {
+        // Formato: 1m30s
+        const [minutes, seconds] = startTime.split('m');
+        startTimeInSeconds = parseInt(minutes) * 60 + (parseInt(seconds) || 0);
+      } else {
+        // Formato: 90s o 90
+        startTimeInSeconds = parseInt(startTime);
+      }
+    }
+
+    // Construir la URL del iframe con el tiempo de inicio
+    const iframeUrl = `https://www.youtube.com/embed/${videoId}${startTimeInSeconds ? `?start=${startTimeInSeconds}` : ''}`;
+
+    // Devolver el iframe centrado
+return `<div style="text-align: center;"><iframe width="560" height="315" src="${iframeUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+  });
+}
 
 
 // Render browse view
@@ -122,39 +151,5 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initial render
   updatePagination();
   renderBrowse();
-
-  // Embed YouTube links in text
-document.addEventListener("DOMContentLoaded", function () {
-    // Llamamos a esta función después de que se carguen los tweets
-    embedYouTubeVideos();
 });
 
-function embedYouTubeVideos() {
-    // Selecciona todos los tweets en la página
-    document.querySelectorAll(".tweet").forEach(tweet => {
-        let links = tweet.querySelectorAll("a"); // Busca todos los enlaces en el tweet
-
-        links.forEach(link => {
-            let url = link.href;
-            let youtubeMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
-
-            if (youtubeMatch) {
-                let videoId = youtubeMatch[2]; // Extrae el ID del video de YouTube
-                let iframe = document.createElement("iframe");
-                iframe.src = `https://www.youtube.com/embed/${videoId}`;
-                iframe.width = "100%";
-                iframe.height = "315";
-                iframe.frameBorder = "0";
-                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                iframe.allowFullscreen = true;
-
-                // Reemplaza el enlace con el iframe
-                link.replaceWith(iframe);
-            }
-        });
-    });
-}
-
-
-
-});

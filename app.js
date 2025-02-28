@@ -54,22 +54,13 @@ function renderBrowse() {
     embedYouTubeVideos();
 }
 
+
 // Incrustar videos de YouTube
 function embedYouTubeVideos() {
-    document.querySelectorAll(".tweet a").forEach(link => {
-        const url = link.href;
-        const youtubeMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
-        if (youtubeMatch) {
-            const videoId = youtubeMatch[2];
-            const iframe = document.createElement("iframe");
-            iframe.src = `https://www.youtube.com/embed/${videoId}`;
-            iframe.width = "100%";
-            iframe.height = "315";
-            iframe.frameBorder = "0";
-            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            iframe.allowFullscreen = true;
-            link.replaceWith(document.createElement("br"), iframe);
-        }
+    document.querySelectorAll(".tweet .search_text").forEach(textDiv => {
+        textDiv.innerHTML = textDiv.innerHTML.replace(/(https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+))/g, (match, url, videoId) => {
+            return `<br><iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        });
     });
 }
 

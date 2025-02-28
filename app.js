@@ -92,9 +92,17 @@ function goToPrevPage() {
     }
 }
 
-// Inicialización
+// Implementar botón de tweet aleatorio
+function getRandomTweet() {
+    if (browseDocuments.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * browseDocuments.length);
+    const randomTweet = browseDocuments[randomIndex];
+    alert(`Tweet aleatorio: \n${randomTweet.full_text}`);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById('next-page').addEventListener('click', goToNextPage);
     document.getElementById('prev-page').addEventListener('click', goToPrevPage);
+    document.getElementById('random-tweet').addEventListener('click', getRandomTweet);
     processData(searchDocuments);
 });

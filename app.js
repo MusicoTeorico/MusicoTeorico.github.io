@@ -1,151 +1,102 @@
-let results;
-
-// Initialize FlexSearch
-var index = new FlexSearch.Document({
-  encode: function (str) {
-    const cjkItems = str.replace(/[\x00-]/g, "").split("");
-    const asciiItems = str.toLowerCase().split(/\W+/);
-    return cjkItems.concat(asciiItems);
-  },
-  document: {
-    id: "id_str",
-    index: ["full_text"],
-    store: true
-  }
-});
+let results = [];
 
 const searchInput = document.getElementById('search-input');
+const browseOutput = document.getElementById('browse-output');
+const loadingIndicator = document.getElementById('loading');
+const searchSection = document.getElementById('search');
 
-// Process data and add to FlexSearch index
+// Procesar datos y agregar al índice de búsqueda
 function processData(data) {
-  for (const doc of data) {
-    index.add({
-      id_str: doc.id_str,
-      created_at: doc.created_at,
-      full_text: doc.full_text,
-      favorite_count: doc.favorite_count,
-      retweet_count: doc.retweet_count
+    data.forEach(doc => {
+        index.add({
+            id_str: doc.id_str,
+            created_at: doc.created_at,
+            full_text: doc.full_text,
+            favorite_count: doc.favorite_count,
+            retweet_count: doc.retweet_count
+        });
     });
-  }
-  document.getElementById('loading').hidden = true; // Hide loading indicator
-  document.getElementById('search').hidden = false; // Show search section
+    loadingIndicator.hidden = true;
+    searchSection.hidden = false;
+    browseDocuments = [...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    renderBrowse();
+    updatePagination();
 }
 
-// Process initial data
-processData(searchDocuments);
-
-// Sort documents by date
-let browseDocuments = searchDocuments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-// Pagination settings
+// Variables de paginación
 const pageSize = 50;
 let page = 1;
-let browseIndex = (page - 1) * pageSize;
+let browseDocuments = [];
 
-// Update pagination buttons
+// Actualizar paginación
 function updatePagination() {
-  document.getElementById('prev-page').disabled = page === 1;
-  document.getElementById('next-page').disabled = page >= Math.ceil(browseDocuments.length / pageSize);
+    document.getElementById('prev-page').disabled = page === 1;
+    document.getElementById('next-page').disabled = page >= Math.ceil(browseDocuments.length / pageSize);
 }
 
-// Render browse view
+// Renderizar tweets en la sección de navegación
 function renderBrowse() {
-  const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => `
-    <p class="search_item">
-      <div class="search_link"><a href="MusicoTeorico/status/${item.id_str}">link</a></div>
-      <div class="search_text">${item.full_text}</div>
-      <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
-      <hr class="search_divider" />
-    </p>`.replace(/\.\.\/\.\.\/tweets_media\//g, 'MusicoTeorico/tweets_media/')
-  );
-
-  document.getElementById('browse-output').innerHTML = output.join('');
-  document.getElementById('browse-output').innerHTML += '<a href="#tabs">top &uarr;</a>';
-
-  // Procesar los videos de YouTube después de renderizar
-  embedYouTubeVideos();
+    if (!browseDocuments.length) return;
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    const output = browseDocuments.slice(start, end).map(item => `
+        <div class="tweet">
+            <p class="search_item">
+                <div class="search_link"><a href="MusicoTeorico/status/${item.id_str}" target="_blank">link</a></div>
+                <div class="search_text">${embedYouTubeLinks(item.full_text)}</div>
+                <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
+            </p>
+            <hr class="search_divider" />
+        </div>
+    `).join('');
+    browseOutput.innerHTML = output;
+    browseOutput.innerHTML += '<a href="#tabs">top &uarr;</a>';
+    embedYouTubeVideos();
 }
 
-// Embed YouTube videos in tweets
+// Incrustar videos de YouTube
 function embedYouTubeVideos() {
-  document.querySelectorAll(".search_item").forEach(tweet => {
-    let links = tweet.querySelectorAll("a");
-
-    links.forEach(link => {
-      let url = link.href;
-      let youtubeMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
-
-      if (youtubeMatch) {
-        let videoId = youtubeMatch[2];
-        let iframe = document.createElement("iframe");
-        let br = document.createElement("br"); // Salto de línea antes del iframe
-        iframe.src = `https://www.youtube.com/embed/${videoId}`;
-        iframe.width = "100%";
-        iframe.height = "315";
-        iframe.frameBorder = "0";
-        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-        iframe.allowFullscreen = true;
-
-        link.replaceWith(br, iframe); // Añadir el salto de línea antes de reemplazar
-      }
+    document.querySelectorAll(".tweet a").forEach(link => {
+        const url = link.href;
+        const youtubeMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+        if (youtubeMatch) {
+            const videoId = youtubeMatch[2];
+            const iframe = document.createElement("iframe");
+            iframe.src = `https://www.youtube.com/embed/${videoId}`;
+            iframe.width = "100%";
+            iframe.height = "315";
+            iframe.frameBorder = "0";
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+            link.replaceWith(document.createElement("br"), iframe);
+        }
     });
-  });
 }
 
-// Go to next page
+// Cambiar a la siguiente página
 function goToNextPage() {
-  if (page < Math.ceil(browseDocuments.length / pageSize)) {
-    page++;
-    browseIndex = (page - 1) * pageSize;
-    renderBrowse();
-    updatePagination();
-  }
+    if (page < Math.ceil(browseDocuments.length / pageSize)) {
+        page++;
+        renderBrowse();
+        updatePagination();
+    }
 }
 
-// Go to previous page
+// Cambiar a la página anterior
 function goToPrevPage() {
-  if (page > 1) {
-    page--;
-    browseIndex = (page - 1) * pageSize;
-    renderBrowse();
-    updatePagination();
-  }
+    if (page > 1) {
+        page--;
+        renderBrowse();
+        updatePagination();
+    }
 }
 
-// Switch to browse tab
-function browseTab() {
-  document.getElementById('browse-tab').classList.add('active');
-  document.getElementById('search-tab').classList.remove('active');
-  document.getElementById('search').hidden = true;
-  document.getElementById('browse').hidden = false;
-}
-
-// Initialize on DOM load
+// Inicialización
 document.addEventListener("DOMContentLoaded", function () {
-  const paginationContainer = document.createElement('div');
-  paginationContainer.className = 'pagination-container';
-  paginationContainer.innerHTML = `
-    <button id="prev-page">Página Anterior</button>
-    <button id="next-page">Página Siguiente</button>
-  `;
-
-  const browseSection = document.getElementById('browse');
-
-  // Remove existing pagination if it exists
-  const existingPagination = document.querySelector('.pagination-container');
-  if (existingPagination) {
-    existingPagination.remove();
-  }
-
-  browseSection.appendChild(paginationContainer);
-
-  // Add event listeners for pagination
-  document.getElementById('next-page').addEventListener('click', goToNextPage);
-  document.getElementById('prev-page').addEventListener('click', goToPrevPage);
-
-  // Initial render
-  updatePagination();
-  renderBrowse();
+    document.getElementById('next-page').addEventListener('click', goToNextPage);
+    document.getElementById('prev-page').addEventListener('click', goToPrevPage);
+    processData(searchDocuments);
 });
+
 
 

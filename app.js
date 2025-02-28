@@ -51,16 +51,22 @@ function updatePagination() {
 }
 
 // Embed YouTube links in text
+document.addEventListener("DOMContentLoaded", function () {
+    // Llamamos a esta función después de que se carguen los tweets
+    embedYouTubeVideos();
+});
+
 function embedYouTubeVideos() {
+    // Selecciona todos los tweets en la página
     document.querySelectorAll(".tweet").forEach(tweet => {
-        let links = tweet.querySelectorAll("a");
+        let links = tweet.querySelectorAll("a"); // Busca todos los enlaces en el tweet
 
         links.forEach(link => {
             let url = link.href;
             let youtubeMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
 
             if (youtubeMatch) {
-                let videoId = youtubeMatch[2];
+                let videoId = youtubeMatch[2]; // Extrae el ID del video de YouTube
                 let iframe = document.createElement("iframe");
                 iframe.src = `https://www.youtube.com/embed/${videoId}`;
                 iframe.width = "100%";
@@ -69,17 +75,13 @@ function embedYouTubeVideos() {
                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
                 iframe.allowFullscreen = true;
 
+                // Reemplaza el enlace con el iframe
                 link.replaceWith(iframe);
             }
         });
     });
 }
 
-// Si los tweets se cargan después con AJAX o Fetch, llama a esta función en la actualización
-function updateTweets() {
-    // Lógica para cargar los tweets...
-    embedYouTubeVideos(); // Vuelve a incrustar videos después de cargar tweets
-}
 
 
 // Render browse view

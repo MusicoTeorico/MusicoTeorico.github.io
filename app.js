@@ -35,9 +35,7 @@ function processData(data) {
 processData(searchDocuments);
 
 // Sort documents by date
-let browseDocuments = searchDocuments.sort(function (a, b) {
-  return new Date(b.created_at) - new Date(a.created_at);
-});
+let browseDocuments = searchDocuments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
 // Pagination settings
 const pageSize = 50;
@@ -47,49 +45,51 @@ let browseIndex = (page - 1) * pageSize;
 // Update pagination buttons
 function updatePagination() {
   document.getElementById('prev-page').disabled = page === 1;
-  document.getElementById('next-page').disabled = page === Math.ceil(browseDocuments.length / pageSize);
+  document.getElementById('next-page').disabled = page >= Math.ceil(browseDocuments.length / pageSize);
 }
-
-
-
 
 // Render browse view
 function renderBrowse() {
   const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => `
     <p class="search_item">
       <div class="search_link"><a href="MusicoTeorico/status/${item.id_str}">link</a></div>
-      <div class="search_text">${embedYouTubeLinks(item.full_text)}</div>
+      <div class="search_text">${item.full_text}</div>
       <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
       <hr class="search_divider" />
     </p>`.replace(/\.\.\/\.\.\/tweets_media\//g, 'MusicoTeorico/tweets_media/')
   );
+
   document.getElementById('browse-output').innerHTML = output.join('');
   document.getElementById('browse-output').innerHTML += '<a href="#tabs">top &uarr;</a>';
+
+  // Procesar los videos de YouTube después de renderizar
+  embedYouTubeVideos();
 }
 
-// Embed YouTube links in text
+// Embed YouTube videos in tweets
 function embedYouTubeVideos() {
-    document.querySelectorAll(".tweet").forEach(tweet => {
-        let links = tweet.querySelectorAll("a");
+  document.querySelectorAll(".search_item").forEach(tweet => {
+    let links = tweet.querySelectorAll("a");
 
-        links.forEach(link => {
-            let url = link.href;
-            let youtubeMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+    links.forEach(link => {
+      let url = link.href;
+      let youtubeMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
 
-            if (youtubeMatch) {
-                let videoId = youtubeMatch[2];
-                let iframe = document.createElement("iframe");
-                iframe.src = `https://www.youtube.com/embed/${videoId}`;
-                iframe.width = "100%";
-                iframe.height = "315";
-                iframe.frameBorder = "0";
-                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                iframe.allowFullscreen = true;
+      if (youtubeMatch) {
+        let videoId = youtubeMatch[2];
+        let iframe = document.createElement("iframe");
+        let br = document.createElement("br"); // Salto de línea antes del iframe
+        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+        iframe.width = "100%";
+        iframe.height = "315";
+        iframe.frameBorder = "0";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        iframe.allowFullscreen = true;
 
-                link.replaceWith(iframe);
-            }
-        });
+        link.replaceWith(br, iframe); // Añadir el salto de línea antes de reemplazar
+      }
     });
+  });
 }
 
 // Go to next page
@@ -114,10 +114,8 @@ function goToPrevPage() {
 
 // Switch to browse tab
 function browseTab() {
-  const clickedTab = document.getElementById('browse-tab');
-  clickedTab.classList.add('active');
-  const otherTab = document.getElementById('search-tab');
-  otherTab.classList.remove('active');
+  document.getElementById('browse-tab').classList.add('active');
+  document.getElementById('search-tab').classList.remove('active');
   document.getElementById('search').hidden = true;
   document.getElementById('browse').hidden = false;
 }
@@ -149,4 +147,5 @@ document.addEventListener("DOMContentLoaded", function () {
   updatePagination();
   renderBrowse();
 });
+
 

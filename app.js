@@ -50,6 +50,23 @@ function updatePagination() {
   document.getElementById('next-page').disabled = page === Math.ceil(browseDocuments.length / pageSize);
 }
 
+
+
+
+// Render browse view
+function renderBrowse() {
+  const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => `
+    <p class="search_item">
+      <div class="search_link"><a href="MusicoTeorico/status/${item.id_str}">link</a></div>
+      <div class="search_text">${embedYouTubeLinks(item.full_text)}</div>
+      <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
+      <hr class="search_divider" />
+    </p>`.replace(/\.\.\/\.\.\/tweets_media\//g, 'MusicoTeorico/tweets_media/')
+  );
+  document.getElementById('browse-output').innerHTML = output.join('');
+  document.getElementById('browse-output').innerHTML += '<a href="#tabs">top &uarr;</a>';
+}
+
 // Embed YouTube links in text
 function embedYouTubeLinks(text) {
   // Expresión regular mejorada para detectar enlaces de YouTube que no estén ya dentro de un iframe
@@ -78,21 +95,6 @@ function embedYouTubeLinks(text) {
     // Devolver el iframe centrado
 return `<div style="text-align: center;"><iframe width="560" height="315" src="${iframeUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
   });
-}
-
-
-// Render browse view
-function renderBrowse() {
-  const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => `
-    <p class="search_item">
-      <div class="search_link"><a href="MusicoTeorico/status/${item.id_str}">link</a></div>
-      <div class="search_text">${embedYouTubeLinks(item.full_text)}</div>
-      <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
-      <hr class="search_divider" />
-    </p>`.replace(/\.\.\/\.\.\/tweets_media\//g, 'MusicoTeorico/tweets_media/')
-  );
-  document.getElementById('browse-output').innerHTML = output.join('');
-  document.getElementById('browse-output').innerHTML += '<a href="#tabs">top &uarr;</a>';
 }
 
 // Go to next page

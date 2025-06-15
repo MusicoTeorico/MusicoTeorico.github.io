@@ -36,70 +36,66 @@ let browseDocuments = searchDocuments.sort(function(a,b){
 
 function sortResults(criterion) {
   if (criterion === 'newest-first') {
-    results = results.sort(function(a,b){
-      return new Date(b.created_at) - new Date(a.created_at);
-    });
+    results = results.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     renderResults();
   }
   if (criterion === 'oldest-first') {
-    results = results.sort(function(a,b){
-      return new Date(a.created_at) - new Date(b.created_at);
-    });
+    results = results.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     renderResults();
   }
   if (criterion === 'most-relevant') {
-    results = results.sort(function(a,b){
-      return a.index - b.index;
-    });
+    results = results.sort((a, b) => a.index - b.index);
     renderResults();
   }
   if (criterion === 'most-popular') {
-    results = results.sort(function(a,b){
-      return (+b.favorite_count + +b.retweet_count) - (+a.favorite_count + +a.retweet_count);
-    });
+    results = results.sort((a, b) =>
+      (+b.favorite_count + +b.retweet_count) - (+a.favorite_count + +a.retweet_count)
+    );
     renderResults();
   }
   if (criterion === 'newest-first-browse') {
-    browseDocuments = browseDocuments.sort(function(a,b){
-      return new Date(b.created_at) - new Date(a.created_at);
-    });
+    browseDocuments = browseDocuments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     renderBrowse();
   }
   if (criterion === 'oldest-first-browse') {
-    browseDocuments = browseDocuments.sort(function(a,b){
-      return new Date(a.created_at) - new Date(b.created_at);
-    });
+    browseDocuments = browseDocuments.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     renderBrowse();
   }
   if (criterion === 'most-popular-browse') {
-    browseDocuments = browseDocuments.sort(function(a,b){
-      return (+b.favorite_count + +b.retweet_count) - (+a.favorite_count + +a.retweet_count);
-    });
+    browseDocuments = browseDocuments.sort((a, b) =>
+      (+b.favorite_count + +b.retweet_count) - (+a.favorite_count + +a.retweet_count)
+    );
     renderBrowse();
   }
 }
 
+// Función para detectar enlaces y generar una vista previa simple
 function getLinkPreview(text) {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  if (text.includes("<video") || text.includes("<iframe")) return "";
+
+  const urlRegex = /(https?:\/\/[^\s<>"']+)/g;
   const urls = text.match(urlRegex);
   if (urls && urls.length > 0) {
-    const url = urls[0]; // solo muestra la primera URL encontrada
-    return `<div class="link_preview"><a href="${url}" target="_blank">${url}</a></div>`;
+    const url = urls[0];
+    return `<div class="link_preview"><a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a></div>`;
   }
   return '';
 }
 
 function renderResults() {
-  const output = results.map(item => `
-    <p class="search_item">
-      <div class="search_link">
-        <a href="Sign_in_music/status/${item.id_str}" target="_blank">link</a>
-        ${getLinkPreview(item.full_text)}
-      </div>
-      <div class="search_text">${item.full_text}</div>
-      <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
-      <hr class="search_divider" />
-    </p>`.replace(/\.\.\/\.\.\/tweets_media\//g,'Sign_in_music/tweets_media/'));
+  const output = results.map(item => {
+    const preview = getLinkPreview(item.full_text);
+    return `
+      <p class="search_item">
+        <div class="search_link">
+          <a href="Sign_in_music/status/${item.id_str}" target="_blank">Ver tuit</a>
+        </div>
+        ${preview}
+        <div class="search_text">${item.full_text}</div>
+        <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
+        <hr class="search_divider" />
+      </p>`.replace(/\.\.\/\.\.\/tweets_media\//g, 'Sign_in_music/tweets_media/');
+  });
   document.getElementById('output').innerHTML = output.join('');
   if (results.length > 0) {
     document.getElementById('output').innerHTML += '<a href="#tabs">top &uarr;</a>';
@@ -109,11 +105,11 @@ function renderResults() {
 function onSearchChange(e) {
   results = index.search(e.target.value, { enrich: true });
   if (results.length > 0) {
-    results = results.slice(0,100);
-    results = results[0].result.map((item, index) => { 
-      let result = item.doc; 
-      result.index = index; 
-      return result; 
+    results = results.slice(0, 100);
+    results = results[0].result.map((item, index) => {
+      let result = item.doc;
+      result.index = index;
+      return result;
     });
   }
   renderResults();
@@ -156,16 +152,19 @@ document.getElementById('page-num').max = pageMax;
 document.getElementById('page-num').min = 1;
 
 function renderBrowse() {
-  const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => `
-    <p class="search_item">
-      <div class="search_link">
-        <a href="Sign_in_music/status/${item.id_str}" target="_blank">link</a>
-        ${getLinkPreview(item.full_text)}
-      </div>
-      <div class="search_text">${item.full_text}</div>
-      <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
-      <hr class="search_divider" />
-    </p>`.replace(/\.\.\/\.\.\/tweets_media\//g,'Sign_in_music/tweets_media/'));
+  const output = browseDocuments.slice(browseIndex, browseIndex + pageSize).map(item => {
+    const preview = getLinkPreview(item.full_text);
+    return `
+      <p class="search_item">
+        <div class="search_link">
+          <a href="Sign_in_music/status/${item.id_str}" target="_blank">Ver tuit</a>
+        </div>
+        ${preview}
+        <div class="search_text">${item.full_text}</div>
+        <div class="search_time">${new Date(item.created_at).toLocaleString()}</div>
+        <hr class="search_divider" />
+      </p>`.replace(/\.\.\/\.\.\/tweets_media\//g, 'Sign_in_music/tweets_media/');
+  });
   document.getElementById('browse-output').innerHTML = output.join('');
   document.getElementById('browse-output').innerHTML += '<a href="#tabs">top &uarr;</a>';
 }

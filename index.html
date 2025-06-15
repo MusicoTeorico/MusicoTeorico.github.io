@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,30 +25,30 @@
           <button class="tab" id="search-tab" onclick="searchTab()">Buscar</button>
         </p>
         <hr class="hr">
-        <p id="loading">Cargando búsqueda...</p>
+        <p id="loading">Loading search...</p>
         <div id="search" hidden>
-          <input id="search-input" type="search" placeholder="Buscar..." />
+          <input id="search-input" type="search" />
           <div id="sorting">
-            Ordenar por: 
-            <button class="sort-button" onclick="sortResults('most-relevant')">más relevantes</button> | 
-            <button class="sort-button" onclick="sortResults('oldest-first')">más antiguos primero</button> | 
-            <button class="sort-button" onclick="sortResults('newest-first')">más nuevos primero</button> | 
-            <button class="sort-button" onclick="sortResults('most-popular')">más populares</button>
+            Sort by:
+            <button class="sort-button" onclick="sortResults('most-relevant')">most relevant</button> |
+            <button class="sort-button" onclick="sortResults('oldest-first')">oldest first</button> |
+            <button class="sort-button" onclick="sortResults('newest-first')">newest first</button> |
+            <button class="sort-button" onclick="sortResults('most-popular')">most popular</button>
           </div>
           <div id="output"></div>
         </div>
         <div id="browse" hidden>
           <div id="browse-sort">
-            Ordenar por: 
-            <button class="sort-button-browse" onclick="sortResults('oldest-first-browse')">más antiguos primero</button> | 
-            <button class="sort-button-browse" onclick="sortResults('newest-first-browse')">más nuevos primero</button> | 
+            Ordenar por:
+            <button class="sort-button-browse" onclick="sortResults('oldest-first-browse')">más antiguos primero</button> |
+            <button class="sort-button-browse" onclick="sortResults('newest-first-browse')">más nuevos primero</button> |
             <button class="sort-button" onclick="sortResults('most-popular-browse')">más populares</button>
           </div>
           <p id="paging">Página <input id="page-num" type="number" /> de <span id="page-total">...</span> </p>
           <div id="browse-output"></div>
         </div>
       </div>
-      <p>Este sitio fue creado con <a href="https://tinysubversions.com/twitter-archive/make-your-own/">esta herramienta de archivo de Twitter</a>.</p>
+      <p>This site was made with <a href="https://tinysubversions.com/twitter-archive/make-your-own/">this Twitter archiving tool</a>.</p>
     </div>
   </div>
 
@@ -59,7 +59,7 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      browseTab();
+      browseTab(); // activa pestaña por defecto
 
       function convertTimeParam(param) {
         if (!param) return '';
@@ -93,18 +93,19 @@
           if (videoId) {
             const seconds = convertTimeParam(t);
             const iframe = document.createElement("iframe");
-            iframe.src = `https://www.youtube.com/embed/${videoId}${seconds ? `?start=${seconds}` : ""}`;
+            iframe.src = https://www.youtube.com/embed/${videoId}${seconds ? ?start=${seconds} : ""};
             iframe.allowFullscreen = true;
 
             const containerDiv = document.createElement("div");
             containerDiv.className = "yt-container";
             containerDiv.appendChild(iframe);
 
+            // fallback: esperar a ver si el video se puede cargar
             setTimeout(() => {
               if (iframe.clientHeight === 0) {
                 const newLink = document.createElement("a");
-                newLink.href = `https://www.youtube.com/watch?v=${videoId}${seconds ? `&t=${seconds}` : ""}`;
-                newLink.textContent = `Ver en YouTube`;
+                newLink.href = https://www.youtube.com/watch?v=${videoId}${seconds ? &t=${seconds} : ""};
+                newLink.textContent = Ver en YouTube;
                 newLink.target = "_blank";
                 containerDiv.replaceWith(newLink);
               }
@@ -115,12 +116,14 @@
         });
       }
 
+      // Re-embed cuando cambia el contenido
       const observer = new MutationObserver(() => {
         document.querySelectorAll('.tweet, #output, #browse-output').forEach(embedYouTubeLinks);
       });
 
       observer.observe(document.body, { childList: true, subtree: true });
+
     });
   </script>
 </body>
-</html>
+</html> 

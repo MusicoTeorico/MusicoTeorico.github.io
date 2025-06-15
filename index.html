@@ -18,7 +18,7 @@
   <div class="wrapper">
     <div class="flex-wrap">
       <h1>Bienvenido al archivo de @MusicoTeorico en Twitter</h1>
-      <p>Aquí puedes encontrar mis tweets y obtener un enlace a una versión archivada. Esto no incluye las respuestas a otras personas en este archivo, por lo que se trata de tweets e hilos independientes.</p>
+      <p>Aquí puedes encontrar mis tweets y obtener un enlace a una versión archivada. Esto no incluye las respuestas a otras personas en este archivo, por lo que se trata de tweets e hilos «independientes».</p>
       <div class="tweet">
         <p id="tabs">
           <button class="tab active" id="browse-tab" onclick="browseTab()">Navegar</button>
@@ -93,7 +93,7 @@
           if (videoId) {
             const seconds = convertTimeParam(t);
             const iframe = document.createElement("iframe");
-            iframe.src = https://www.youtube.com/embed/${videoId}${seconds ? ?start=${seconds} : ""};
+            iframe.src = `https://www.youtube.com/embed/${videoId}${seconds ? `?start=${seconds}` : ""}`;
             iframe.allowFullscreen = true;
 
             const containerDiv = document.createElement("div");
@@ -104,8 +104,8 @@
             setTimeout(() => {
               if (iframe.clientHeight === 0) {
                 const newLink = document.createElement("a");
-                newLink.href = https://www.youtube.com/watch?v=${videoId}${seconds ? &t=${seconds} : ""};
-                newLink.textContent = Ver en YouTube;
+                newLink.href = `https://www.youtube.com/watch?v=${videoId}${seconds ? `&t=${seconds}` : ""}`;
+                newLink.textContent = `Ver en YouTube`;
                 newLink.target = "_blank";
                 containerDiv.replaceWith(newLink);
               }
@@ -126,4 +126,4 @@
     });
   </script>
 </body>
-</html> 
+</html>
